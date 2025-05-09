@@ -1,0 +1,82 @@
+'''Data Analytics III
+1. Implement Simple Naïve Bayes classification algorithm using Python/R on iris.csv dataset.
+2. Compute Confusion matrix to find TP, FP, TN, FN, Accuracy, Error rate, Precision, Recall
+on the given dataset.'''
+
+# Step 1: Import libraries and create aliases
+import pandas as pd         # alias for Pandas
+import numpy as np          # alias for Numpy
+import matplotlib.pyplot as plt  # alias for Matplotlib
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Step 2: Import the dataset
+data = pd.read_csv(r"D:\Sem 6\Practicals\DSBDA\Codes\6_Social_Network_Ads.csv")
+
+# Step 3: Initialize the DataFrame
+df = pd.DataFrame(data)
+print("Initial Dataset:")
+print(df.head())
+
+# Step 4: Data Preprocessing
+# Check for Null Values
+
+# Step 4: Data Preprocessing
+print("\nNull values in each column:")
+print(df.isnull().sum())
+
+# Convert categorical 'Gender' column to numeric
+from sklearn.preprocessing import LabelEncoder
+label = LabelEncoder()
+df['Gender'] = label.fit_transform(df['Gender'])
+df['Gender']
+
+print("\nNull values in each column:")
+print(df.isnull().sum())
+
+# Divide the dataset into Independent (X) and Dependent (Y) variables
+# Assuming 'Purchased' is the target variable
+X = df.drop('Purchased', axis=1)
+Y = df['Purchased']
+
+# Split the dataset into training and testing datasets
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+
+# Scale the Features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+print("\nData preprocessing completed successfully.")
+
+#Use Naive Bayes algorithm( Train the Machine ) to Create Model 
+# import the class 
+# Step 5: Use Naive Bayes algorithm (Train the Machine) to Create Model
+# import the class 
+from sklearn.naive_bayes import GaussianNB 
+gaussian = GaussianNB() 
+gaussian.fit(X_train, Y_train)  # Ensure y_train is defined properly
+
+# Step 6: Predict the y_pred for all values of train_x and test_x 
+Y_pred = gaussian.predict(X_test)
+
+# Step 7: Evaluate the performance of Model for train_y and test_y 
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+
+accuracy = accuracy_score(Y_test, Y_pred) 
+precision = precision_score(Y_test, Y_pred, average='micro') 
+recall = recall_score(Y_test, Y_pred, average='micro') 
+
+# Step 8: Calculate the required evaluation parameters 
+from sklearn.metrics import confusion_matrix 
+cm = confusion_matrix(Y_test, Y_pred) 
+cm
+
+#output
+print("\nConfusion Matrix:")
+print(cm)
+
+print("\nAccuracy:", accuracy)
+print("Precision:", precision)
+print("Recall:", recall)
+

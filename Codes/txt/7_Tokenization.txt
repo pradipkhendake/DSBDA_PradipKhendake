@@ -1,0 +1,105 @@
+'''
+Text Analytics
+1. Extract Sample document and apply following document preprocessing methods:
+Tokenization, POS Tagging, stop words removal, Stemming and Lemmatization.
+2. Create representation of document by calculating Term Frequency and Inverse Document
+Frequency.
+'''
+import nltk
+from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+import re
+import pandas as pd
+import math
+
+# Download required NLTK packages (run once)
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('averaged_perceptron_tagger')
+
+# Sample text for tokenization
+text = "This is a sample tokenization text."
+
+# Sentence and Word Tokenization
+print("Sentence Tokenization:", sent_tokenize(text))
+print("Word Tokenization:", word_tokenize(text))
+
+# Stopwords Removal
+text = "How to remove stop words with NLTK library in Python?"
+text = re.sub('[^a-zA-Z]', ' ', text)
+tokens = word_tokenize(text.lower())
+filtered_text = [w for w in tokens if w not in set(stopwords.words("english"))]
+print("Filtered Sentence:", filtered_text)
+
+# Stemming
+ps = PorterStemmer()
+e_words = ["wait", "waiting", "waited", "waits"]
+print("Stemmed Words:", [ps.stem(w) for w in e_words])
+
+# Lemmatization
+lemmatizer = WordNetLemmatizer()
+text = "studies studying cries cry"
+tokens = word_tokenize(text)
+print("Lemmatized Words:")
+for w in tokens:
+    print(f"{w} -> {lemmatizer.lemmatize(w)}")
+
+
+
+# TF-IDF Calculation (Manual)
+documentA = 'Earth is the only inhabitable planet in the solar system'
+documentB = 'Mars has the potential to be a second habitable planet in our solar system in the next decade'
+
+# Bag of Words
+bagA = documentA.split()
+bagB = documentB.split()
+uniqueWords = set(bagA).union(set(bagB))
+
+# Word frequencies
+freqA = dict.fromkeys(uniqueWords, 0)
+freqB = dict.fromkeys(uniqueWords, 0)
+for word in bagA:
+    freqA[word] += 1
+for word in bagB:
+    freqB[word] += 1
+
+# TF Calculation
+def computeTF(wordDict, bag):
+    tfDict = {}
+    bagCount = len(bag)
+    for word, count in wordDict.items():
+        tfDict[word] = count / float(bagCount)
+    return tfDict
+
+tfA = computeTF(freqA, bagA)
+tfB = computeTF(freqB, bagB)
+
+# IDF Calculation with Zero Division Prevention
+def computeIDF(documents):
+    idfDict = dict.fromkeys(documents[0].keys(), 0)
+    N = len(documents)
+    for doc in documents:
+        for word, val in doc.items():
+            if val > 0:
+                idfDict[word] += 1
+    for word, val in idfDict.items():
+        if val > 0:
+            idfDict[word] = math.log(N / float(val))
+        else:
+            idfDict[word] = 0  # If the word is present in no documents, set IDF to 0
+    return idfDict
+
+idfs = computeIDF([freqA, freqB])
+
+# TF-IDF Calculation
+def computeTFIDF(tf, idfs):
+    return {word: tf[word] * idfs[word] for word in tf}
+
+tfidfA = computeTFIDF(tfA, idfs)
+tfidfB = computeTFIDF(tfB, idfs)
+
+# Output TF-IDF
+df = pd.DataFrame([tfidfA, tfidfB])
+print("\nTF-IDF DataFrame:\n", df)

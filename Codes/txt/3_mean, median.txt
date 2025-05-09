@@ -1,0 +1,52 @@
+'''
+Descriptive Statistics - Measures of Central Tendency and variability
+Perform the following operations on any open source dataset (e.g., data.csv)
+1. Provide summary statistics (mean, median, minimum, maximum, standard deviation) for
+a dataset (age, income etc.) with numeric variables grouped by one of the qualitative
+(categorical) variable. For example, if your categorical variable is age groups and
+quantitative variable is income, then provide summary statistics of income grouped by the
+age groups. Create a list that contains a numeric value for each response to the categorical
+variable.
+2. Write a Python program to display some basic statistical details like percentile, mean,
+standard deviation etc'''
+import pandas as pd 
+import numpy as np 
+import matplotlib.pyplot as plt 
+from scipy import stats 
+from sklearn import preprocessing 
+df = pd.read_csv(r"D:\Sem 6\Practicals\DSBDA\Codes\3.csv") 
+df
+
+#Mean
+df.mean() 
+df.loc[:,'math_score'].mean() 
+df.mean(axis=1)[0:4]
+
+#Median 
+df.median() 
+df.loc[:,'math_score'].median() 
+df.median(axis=1)[0:4] 
+
+#Mode
+df.mode() 
+df.loc[:,'science_score'].mode() 
+
+#Minimum: 
+df.min() 
+df.loc[:,'english_score'].min(skipna = False) 
+
+#Maximum : 
+df.max() 
+df.loc[:,'english_score'].max(skipna = False) 
+
+#Standard deviation  
+df.std() 
+df.loc[:,'english_score'].std() 
+
+#Group by
+df.groupby(['english_score'])['science_score'].mean() 
+enc = preprocessing.OneHotEncoder() 
+enc_df = pd.DataFrame(enc.fit_transform(df[['math_score']]).toarray()) 
+enc_df 
+df_encode =df.join(enc_df) 
+df_encode

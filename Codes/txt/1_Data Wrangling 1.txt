@@ -1,0 +1,31 @@
+'''Data Wrangling, I
+Perform the following operations using Python on any open source dataset (e.g., data.csv)
+1. Import all the required Python Libraries.
+2. Locate an open source data from the web (e.g., https://www.kaggle.com). Provide a clear
+ description of the data and its source (i.e., URL of the web site).
+3. Load the Dataset into pandas dataframe.
+4. Data Preprocessing: check for missing values in the data using pandas isnull(), describe()
+function to get some initial statistics. Provide variable descriptions. Types of variables etc.
+Check the dimensions of the data frame.
+5. Data Formatting and Data Normalization: Summarize the types of variables by checking
+the data types (i.e., character, numeric, integer, factor, and logical) of the variables in the
+data set. If variables are not in the correct data type, apply proper type conversions.
+6. Turn categorical variables into quantitative variables in Python'''
+
+import pandas as pd
+df1= pd.read_csv(r"D:\Sem 6\Practicals\DSBDA\Codes\1_n_movies.csv") 
+print(df1)
+df1.head(n=10)
+df1.tail(n=10)
+df1.index
+df1.columns
+df1.shape
+df1.dtypes
+df1.columns.values
+df1.describe(include='all')
+df1.sort_index(axis=1,ascending=False)
+df1.iloc[5]
+df1[0:3]
+df1.iloc[:5,:]
+df1.iloc[:,:6]
+df1.iloc[:4,:2]
